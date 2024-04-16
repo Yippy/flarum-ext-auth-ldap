@@ -65,3 +65,13 @@ This extension support English.
   * Login: cn=admin,dc=flarum,dc=com
   * Password: flarum
   * Create a new entry -> Default -> inetOrgPerson
+
+## Support
+
+This extension is under **minimal maintenance**.
+
+## Links
+
+- [GitHub](https://github.com/Yippy/flarum-ext-auth-ldap)
+- [Packagist](https://packagist.org/packages/yippy/flarum-ext-auth-ldap)
+- [Discuss](https://discuss.flarum.org/d/34414-ldap-login-extension-with-multiple-ldap-server-support)
