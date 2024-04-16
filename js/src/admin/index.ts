@@ -22,8 +22,8 @@ interface LdapDomain {
   useSSL: boolean
   useTLS: boolean
 }
-const settingsPrefix = 'tituspijean-auth-ldap.';
-const translationPrefix = 'tituspijean-auth-ldap.admin.settings.';
+const settingsPrefix = 'yippy-auth-ldap.';
+const translationPrefix = 'yippy-auth-ldap.admin.settings.';
 const ldapDomainsSettingKey = settingsPrefix+'domains';
 const ldapNicknameAvailableFields = [
   // Full Name
@@ -76,9 +76,9 @@ const _sort = (list = [], selected = []) => {
   return list;
 }
 
-app.initializers.add('tituspijean-auth-ldap', function(app) {
+app.initializers.add('yippy-auth-ldap', function(app) {
   app.extensionData
-    .for('tituspijean-auth-ldap')
+    .for('yippy-auth-ldap')
     .registerSetting(
       {
         setting: settingsPrefix + 'method_name',

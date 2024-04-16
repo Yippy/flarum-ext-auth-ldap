@@ -1,4 +1,4 @@
-tituspijean-auth-ldap:
+yippy-auth-ldap:
   forum:
     account_found: Found account in {server}
     log_in_with: Log in with {server}

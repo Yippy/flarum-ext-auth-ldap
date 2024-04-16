@@ -11,9 +11,9 @@ import LDAPLogInModal from "./components/LDAPLogInModal";
 import Stream from 'flarum/utils/Stream';
 import extractText from 'flarum/utils/extractText';
 
-const translationPrefix = 'tituspijean-auth-ldap.forum.';
+const translationPrefix = 'yippy-auth-ldap.forum.';
 
-app.initializers.add('tituspijean-auth-ldap', () => {
+app.initializers.add('yippy-auth-ldap', () => {
   extend(HeaderSecondary.prototype, 'items', addLoginLink);
   extend(HeaderSecondary.prototype, 'items', removeIfOnlyUse);
   extend(LogInModal.prototype, 'content', overrideLogInModal);
@@ -42,7 +42,7 @@ app.initializers.add('tituspijean-auth-ldap', () => {
 
   SignUpModal.prototype.title = function() {
     if (this.attrs.isLDAP) {
-      return app.translator.trans(translationPrefix + 'account_found', {server: app.forum.attribute('tituspijean-auth-ldap.method_name')});
+      return app.translator.trans(translationPrefix + 'account_found', {server: app.forum.attribute('yippy-auth-ldap.method_name')});
     } else {
       return app.translator.trans('core.forum.sign_up.title');
     }
@@ -63,7 +63,7 @@ app.initializers.add('tituspijean-auth-ldap', () => {
   extend(SettingsPage.prototype, 'settingsItems', checkRemoveAccountSection);
 
 	function overrideLogInModal() {
-		if (app.forum.attribute('tituspijean-auth-ldap.onlyUse')) {
+		if (app.forum.attribute('yippy-auth-ldap.onlyUse')) {
 			LogInModal.prototype.content = LDAPLogInModal.prototype.content
 			LogInModal.prototype.title = LDAPLogInModal.prototype.title
 			LogInModal.prototype.body = LDAPLogInModal.prototype.body
@@ -83,7 +83,7 @@ app.initializers.add('tituspijean-auth-ldap', () => {
 						className: 'Button Button--link',
 						onclick: () => app.modal.show(LDAPLogInModal)
 					},
-					app.translator.trans(translationPrefix + 'log_in_with', {server: app.forum.attribute('tituspijean-auth-ldap.method_name')})
+					app.translator.trans(translationPrefix + 'log_in_with', {server: app.forum.attribute('yippy-auth-ldap.method_name')})
 				),
 				0
 			);
@@ -91,7 +91,7 @@ app.initializers.add('tituspijean-auth-ldap', () => {
 	}
 
 	function removeIfOnlyUse(items) {
-		if (app.forum.attribute('tituspijean-auth-ldap.onlyUse')) {
+		if (app.forum.attribute('yippy-auth-ldap.onlyUse')) {
 			if (items.has('signUp')) {
 				items.remove('signUp');
 			}
