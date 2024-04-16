@@ -9,7 +9,9 @@ This extension enables users to log into [Flarum](https://github.com/flarum/core
 ## How to install
 
 `composer require yippy/flarum-ext-auth-ldap`
+
 Must install select2 assets for LDAP Server Settings dropdown selection to work.
+
 `php flarum assets:publish`
 
 Activate it in Flarum's administration panel.
