@@ -10,9 +10,13 @@ This extension enables users to log into [Flarum](https://github.com/flarum/core
 
 `composer require yippy/flarum-ext-auth-ldap`
 
-Must install select2 assets for LDAP Server Settings dropdown selection to work.
+You must run this command for this extension to work, this is because the assets command will include select2 for the dropdown menu to work.
 
-`php flarum assets:publish`
+    `php flarum assets:publish`
+
+![Run Flarum Assets Command](https://github.com/Yippy/flarum-ext-auth-ldap/raw/master/assets/images/run_flarum_assets_command.png)
+
+If you are unable to run that command, and the dropdown menu is still not working. You can copy the [asset manually](https://github.com/Yippy/flarum-ext-auth-ldap/tree/master/assets) and move it to the [FLARUM_DATA_DIRECTORY]\assets\extensions\yippy-auth-ldap\ folder.
 
 Activate it in Flarum's administration panel.
 
@@ -22,9 +26,9 @@ This extension support English.
 
 ## Configuration
 
-![Screenshot](/assets/images/ldap_login_settings.png)
+![Screenshot](https://github.com/Yippy/flarum-ext-auth-ldap/raw/master/assets/images/ldap_login_settings.png)
 
-- `LDAP server name`: sets the end of the `Login with` link at the top of the forum: ![image](https://user-images.githubusercontent.com/8769166/82216921-eeed9080-9919-11ea-9ae5-8c795816f3fa.png)
+- `LDAP server name`: sets the end of the `Login with` link at the top of the forum: ![image](https://github.com/Yippy/flarum-ext-auth-ldap/raw/master/assets/images/ldap_login_header.png)
 
 - `LDAP domains or server IP adresses (comma separated)`: list of LDAP servers to use.
 - `Port`: LDAP server port
@@ -40,6 +44,7 @@ This extension support English.
 
 - `Disable Flarum login and only use LDAP authentication`: merely hides the standard login links and buttons. Users can still use the standard login method through the API.
 - `Display detailed LDAP errors for failed login attempts`: enable this option to help troubleshoot LDAP account errors for failed login, this will display a error whether the account isn't found, disabled or password expired.
+- `Enable LDAP Server`: Toggle LDAP Domain server, when disabled (Unticked) this setting will be skipped.
 
 ## Development (With docker)
 
