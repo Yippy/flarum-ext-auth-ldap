@@ -21,6 +21,7 @@ interface LdapDomain {
   followReferrals: boolean
   useSSL: boolean
   useTLS: boolean
+  isEnabled: boolean
 }
 const settingsPrefix = 'yippy-auth-ldap.';
 const translationPrefix = 'yippy-auth-ldap.admin.settings.';
@@ -109,9 +110,10 @@ app.initializers.add('yippy-auth-ldap', function(app) {
             m('tbody', [
               ldapDomains.map((rule, index) => m('table', {
                 border: '1px solid black',
+                'style': rule.isEnabled || rule.isEnabled == undefined ?'background-color: #ffffff':'background-color: #F88379',
               }, [
                 m('thead', m('tr', [
-                  m('th', app.translator.trans(translationPrefix + 'domains.banner', {index: index+1})),
+                  m('th', app.translator.trans(translationPrefix + 'domains.banner', {index: index+1, isEnabled: rule.isEnabled || rule.isEnabled == undefined ? app.translator.trans(translationPrefix + 'domains.is_enabled.enabled'): app.translator.trans(translationPrefix + 'domains.is_enabled.disabled')})),
                   m('th', Button.component({
                     className: 'Button Button--icon',
                     icon: 'fas fa-times',
@@ -373,6 +375,17 @@ app.initializers.add('yippy-auth-ldap', function(app) {
                       ]),
                       m('tr', [
                         m('td', { colspan: 2, class: 'helpText'}, app.translator.trans(translationPrefix + 'domains.data.user_nickname_fields_help')),
+                      ]),
+                      m('tr', [
+                        m('td', app.translator.trans(translationPrefix + 'domains.data.is_enabled')),
+                        m('td', m('input', {
+                          type: 'checkbox',
+                          checked: rule.isEnabled || rule.isEnabled == undefined,
+                          onchange: (event: InputEvent) => {
+                              rule.isEnabled = (event.target as HTMLInputElement).checked;
+                              this.setting(ldapDomainsSettingKey)(JSON.stringify(ldapDomains));
+                          },
+                        })),
                       ])
                     ])
                   ])

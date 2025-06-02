@@ -60,106 +60,109 @@ class LDAPAuthController implements RequestHandlerInterface
 		$ldapErrors = [];
 		for ($index = 0; $index < $domainsCount; $index++) {
 			$domain = $domains[$index];
-			if (empty($domain['host'])) {
-				return $this->errorResponse("domains.empty_host", ["domain_index" => $index+1]);
-			}
-			$config = [
-				'hosts' => explode(',', $domain['host']),
-				'username' => $domain['admin']['dn'],
-				'password' => $domain['admin']['password'],
-				'port' => intval($domain['port']),
-				'version' => intval($domain['version']),
-				'follow_referrals' => boolval($domain['followReferrals']),
-				'use_ssl' => boolval($domain['useSSL']),
-				'use_tls' => boolval($domain['useTLS']),
-				'timeout' => 5
-			];
-			$userLdapUsername = $domain['user']['username'];
-			if (empty($userLdapUsername)) {
-				return $this->errorResponse("domains.empty_user_username", ["domain_index" => $index+1]);
-			} else {
-				// For use with Nicknames extension enabled
-				$searchNicknameFields = $domain['user']['nicknameFields'];
-	
-				$searchBaseDNs = $domain['baseDN'];
-				if (empty($searchBaseDNs)) {
-					return $this->errorResponse("domains.empty_base_dn", ["domain_index" => $index+1]);
+			$domainIsEnabled = array_key_exists("isEnabled",$domain) ? $domain["isEnabled"] : true;
+			if ($domainIsEnabled) {
+				if (empty($domain['host'])) {
+					return $this->errorResponse("domains.empty_host", ["domain_index" => $index+1]);
 				}
-				$filter = $domain['filter'];
-				$searchUserFields = $domain['searchFields'];
-				if (empty($searchUserFields)) {
-					return $this->errorResponse("domains.empty_search_field", ["domain_index" => $index+1]);
-				}
-				$userLdapMail = $domain['user']['mail'];
+				$config = [
+					'hosts' => explode(',', $domain['host']),
+					'username' => $domain['admin']['dn'],
+					'password' => $domain['admin']['password'],
+					'port' => intval($domain['port']),
+					'version' => intval($domain['version']),
+					'follow_referrals' => boolval($domain['followReferrals']),
+					'use_ssl' => boolval($domain['useSSL']),
+					'use_tls' => boolval($domain['useTLS']),
+					'timeout' => 5
+				];
+				$userLdapUsername = $domain['user']['username'];
+				if (empty($userLdapUsername)) {
+					return $this->errorResponse("domains.empty_user_username", ["domain_index" => $index+1]);
+				} else {
+					// For use with Nicknames extension enabled
+					$searchNicknameFields = $domain['user']['nicknameFields'];
+		
+					$searchBaseDNs = $domain['baseDN'];
+					if (empty($searchBaseDNs)) {
+						return $this->errorResponse("domains.empty_base_dn", ["domain_index" => $index+1]);
+					}
+					$filter = $domain['filter'];
+					$searchUserFields = $domain['searchFields'];
+					if (empty($searchUserFields)) {
+						return $this->errorResponse("domains.empty_search_field", ["domain_index" => $index+1]);
+					}
+					$userLdapMail = $domain['user']['mail'];
 
-				$connection = new Connection($config);
+					$connection = new Connection($config);
 
-				foreach (explode(';', $searchBaseDNs) as $searchBaseDN) {
-					foreach ($searchUserFields as $searchUserField) {
-						try {
+					foreach (explode(';', $searchBaseDNs) as $searchBaseDN) {
+						foreach ($searchUserFields as $searchUserField) {
+							try {
 
-							if (!isset($filter) || $filter != '') {
-								$user = $connection->query()
-									->setDn($searchBaseDN)
-									->where($searchUserField, '=', $id)
-									->rawFilter($filter)
-									->firstOrFail();
-							} else {
-								$user = $connection->query()
-									->setDn($searchBaseDN)
-									->where($searchUserField, '=', $id)
-									->firstOrFail();
-							}
-							if ($connection->auth()->attempt($user['dn'], $password, $bindAsUser = true)) {
-								if (!array_key_exists(strtolower($userLdapUsername), $user)) {
-									// Prevent response showing exception for null username field
-									return $this->errorResponse("domains.username_field_does_not_exist", ["data" => $userLdapUsername, "domain_index" => $index+1]);
+								if (!isset($filter) || $filter != '') {
+									$user = $connection->query()
+										->setDn($searchBaseDN)
+										->where($searchUserField, '=', $id)
+										->rawFilter($filter)
+										->firstOrFail();
+								} else {
+									$user = $connection->query()
+										->setDn($searchBaseDN)
+										->where($searchUserField, '=', $id)
+										->firstOrFail();
 								}
-								if (!empty($userLdapMail) && !array_key_exists(strtolower($userLdapMail), $user)) {
-									return $this->errorResponse("domains.mail_field_does_not_exist", ["data" => $userLdapMail, "domain_index" => $index+1]);
-								}
-								return $this->response->make(
-									'ldap',
-									$user[strtolower($userLdapUsername)][0],
-									function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields) {
-										$foundNickname = [];
-										foreach ($searchNicknameFields as $searchNicknameField) {
-											if (array_key_exists(strtolower($searchNicknameField), $user)) {
-												array_push($foundNickname, $user[strtolower($searchNicknameField)][0]);
+								if ($connection->auth()->attempt($user['dn'], $password, $bindAsUser = true)) {
+									if (!array_key_exists(strtolower($userLdapUsername), $user)) {
+										// Prevent response showing exception for null username field
+										return $this->errorResponse("domains.username_field_does_not_exist", ["data" => $userLdapUsername, "domain_index" => $index+1]);
+									}
+									if (!empty($userLdapMail) && !array_key_exists(strtolower($userLdapMail), $user)) {
+										return $this->errorResponse("domains.mail_field_does_not_exist", ["data" => $userLdapMail, "domain_index" => $index+1]);
+									}
+									return $this->response->make(
+										'ldap',
+										$user[strtolower($userLdapUsername)][0],
+										function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields) {
+											$foundNickname = [];
+											foreach ($searchNicknameFields as $searchNicknameField) {
+												if (array_key_exists(strtolower($searchNicknameField), $user)) {
+													array_push($foundNickname, $user[strtolower($searchNicknameField)][0]);
+												}
+											}
+											$registration
+												->suggest('isLDAP', true)
+												->provide('username', $user[strtolower($userLdapUsername)][0])
+												//->provideAvatar($user->getJpegPhoto())
+												->setPayload((array)$user['dn']);
+											if (count($foundNickname) > 0) {
+												$registration
+													->provide('nickname', implode(" ", $foundNickname));
+											}
+											if (!empty($userLdapMail)) {
+												$registration
+													->provideTrustedEmail($user[strtolower($userLdapMail)][0]);
 											}
 										}
-										$registration
-											->suggest('isLDAP', true)
-											->provide('username', $user[strtolower($userLdapUsername)][0])
-											//->provideAvatar($user->getJpegPhoto())
-											->setPayload((array)$user['dn']);
-										if (count($foundNickname) > 0) {
-											$registration
-												->provide('nickname', implode(" ", $foundNickname));
-										}
-										if (!empty($userLdapMail)) {
-											$registration
-												->provideTrustedEmail($user[strtolower($userLdapMail)][0]);
-										}
+									);
+								} else {
+									$error = $connection->getLdapConnection()->getDiagnosticMessage();
+		
+									if (strpos($error, '532') !== false) {
+										throw new Exception("account.password_expired");
+									} elseif (strpos($error, '533') !== false) {
+										throw new Exception("account.disabled");
+									} elseif (strpos($error, '701') !== false) {
+										throw new Exception("account.expired");
+									} elseif (strpos($error, '775') !== false) {
+										throw new Exception("account.locked");
 									}
-								);
-							} else {
-								$error = $connection->getLdapConnection()->getDiagnosticMessage();
-	
-								if (strpos($error, '532') !== false) {
-									throw new Exception("account.password_expired");
-								} elseif (strpos($error, '533') !== false) {
-									throw new Exception("account.disabled");
-								} elseif (strpos($error, '701') !== false) {
-									throw new Exception("account.expired");
-								} elseif (strpos($error, '775') !== false) {
-									throw new Exception("account.locked");
+		
+									throw new Exception("account.incorrect_details");
 								}
-	
-								throw new Exception("account.incorrect_details");
+							} catch (Exception $e) {
+								$ldapErrors[] = $e->getMessage();
 							}
-						} catch (Exception $e) {
-							$ldapErrors[] = $e->getMessage();
 						}
 					}
 				}
