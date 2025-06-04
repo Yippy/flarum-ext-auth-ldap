@@ -144,7 +144,7 @@ app.initializers.add(settingsPrefix, () => {
         return m('.Form-group', [
           m('label', app.translator.trans(translationPrefix + 'domains.title')),
           m('.helpText', app.translator.trans(translationPrefix + 'domains.description')),
-          m('table', {style:'table-layout:fixed'}, [
+          m('table', {style:'table-layout:fixed;color:#000000;'}, [
             m('tbody', [
               ldapDomains.map((rule, index) => m('table', {
                 border: '1px solid black',
@@ -176,6 +176,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.host')),
                         m('td', m('input.FormControl', {
                           type: 'text',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.host || '',
                           placeholder: 'localhost',
                           onchange: (event: InputEvent) => {
@@ -191,6 +192,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.port')),
                         m('td', m('input.FormControl', {
                           type: 'number',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.port || 389,
                           placeholder: '389',
                           onchange: (event: InputEvent) => {
@@ -206,6 +208,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.version')),
                         m('td', m('input.FormControl', {
                           type: 'number',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.version || 3,
                           placeholder: '3',
                           onchange: (event: InputEvent) => {
@@ -221,6 +224,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.base_dn')),
                         m('td', m('input.FormControl', {
                           type: 'text',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.baseDN || '',
                           placeholder: 'ou=users,dc=yunohost,dc=org',
                           onchange: (event: InputEvent) => {
@@ -236,6 +240,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.filter')),
                         m('td', m('input.FormControl', {
                           type: 'text',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.filter || '',
                           placeholder: '(&(objectClass=posixAccount)(permission=cn=flarum.main,ou=permission,dc=yunohost,dc=org)',
                           onchange: (event: InputEvent) => {
@@ -287,6 +292,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.admin_dn')),
                         m('td', m('input.FormControl', {
                           type: 'text',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.admin.dn || '',
                           placeholder: 'cn=admin,dc=yunohost,dc=org',
                           onchange: (event: InputEvent) => {
@@ -302,6 +308,7 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.admin_password')),
                         m('td', m('input.FormControl', {
                           type: 'text',
+                          style: "background-color:#e8ecf2;color:#000000",
                           value: rule.admin.password || '',
                           placeholder: 'password',
                           onchange: (event: InputEvent) => {
@@ -323,7 +330,19 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.search_user_fields')),
                         m('td',
                           m('select', {
-                            oncreate: ({dom}) => $(dom).select2({ width: '100%', multiple: true, data: _sort(ldapSearchUsernameAvailableFields, rule.searchFields)}).on("change", function() {
+                            oncreate: ({dom}) => $(dom).select2({
+                              width: '100%',
+                              multiple: true,
+                              data: _sort(ldapSearchUsernameAvailableFields, rule.searchFields),
+                              templateResult: (value) => {
+                                var output = '<span style="color:#000000;">';
+                                output += value.text+"</span>";
+                                return output;
+                              },
+                              escapeMarkup: (m) => {
+                                return m;
+                              },
+                            }).on("change", function() {
                               this.dispatchEvent(new CustomEvent('edit', {"detail": $(this).val()}));
                             }).on('select2:select', function(e){
                               var id = e.params.data.id;
@@ -352,7 +371,19 @@ app.initializers.add(settingsPrefix, () => {
                         m('td',
                           m('select', {
                             value: rule.user.username || '',
-                            oncreate: ({dom}) => $(dom).select2({ width: '100%', allowClear: true, placeholder: '' }).on("change", function() {
+                            oncreate: ({dom}) => $(dom).select2({
+                              width: '100%',
+                              allowClear: true,
+                              placeholder: '',
+                              templateResult: (value) => {
+                                var output = '<span style="color:#000000;">';
+                                output += value.text+"</span>";
+                                return output;
+                              },
+                              escapeMarkup: (m) => {
+                                return m;
+                              },
+                            }).on("change", function() {
                               this.dispatchEvent(new CustomEvent('edit', {"detail": this.value}));
                             }),
                             onedit: (event: InputEvent) => {
@@ -373,7 +404,19 @@ app.initializers.add(settingsPrefix, () => {
                         m('td',
                           m('select', {
                             value: rule.user.mail || '',
-                            oncreate: ({dom}) => $(dom).select2({ width: '100%', allowClear: true, placeholder: '' }).on("change", function() {
+                            oncreate: ({dom}) => $(dom).select2({
+                              width: '100%',
+                              allowClear: true,
+                              placeholder: '',
+                              templateResult: (value) => {
+                                var output = '<span style="color:#000000;">';
+                                output += value.text+"</span>";
+                                return output;
+                              },
+                              escapeMarkup: (m) => {
+                                return m;
+                              },
+                            }).on("change", function() {
                               this.dispatchEvent(new CustomEvent('edit', {"detail": this.value}));
                             }),
                             onedit: (event: InputEvent) => {
@@ -396,7 +439,19 @@ app.initializers.add(settingsPrefix, () => {
                         m('td', app.translator.trans(translationPrefix + 'domains.data.user_nickname_fields')),
                         m('td',
                           m('select', {
-                            oncreate: ({dom}) => $(dom).select2({ width: '100%', multiple: true, data: _sort(ldapNicknameAvailableFields, rule.user.nicknameFields)}).on("change", function() {
+                            oncreate: ({dom}) => $(dom).select2({
+                              width: '100%',
+                              multiple: true,
+                              data: _sort(ldapNicknameAvailableFields, rule.user.nicknameFields),
+                              templateResult: (value) => {
+                                var output = '<span style="color:#000000;">';
+                                output += value.text+"</span>";
+                                return output;
+                              },
+                              escapeMarkup: (m) => {
+                                return m;
+                              },
+                            }).on("change", function() {
                               this.dispatchEvent(new CustomEvent('edit', {"detail": $(this).val()}));
                             }).on('select2:select', function(e){
                               var id = e.params.data.id;
@@ -420,7 +475,7 @@ app.initializers.add(settingsPrefix, () => {
                           m('select', {
                             oncreate: ({dom}) => $(dom).select2({
                               templateResult: (value) => {
-                                var output = '<span>'
+                                var output = '<span style="color:#000000;">'
                                 if(value.icon){
                                   output += '<i class="fa fa-lg '+value.icon.toLowerCase()+'"></i> ';
                                 }
