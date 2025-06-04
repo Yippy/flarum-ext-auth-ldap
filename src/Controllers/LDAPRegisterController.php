@@ -34,7 +34,7 @@ class LDAPRegisterController implements RequestHandlerInterface
         if (array_key_exists('email', $attributes) && empty($attributes['email'])) {
             $contents = ["errors" => [
                 [
-                    "status" => "401",
+                    "status" => "422",
                     "code" => "validation_error",
                     "source" => [
                         "pointer" => "\/data\/attributes\/email"

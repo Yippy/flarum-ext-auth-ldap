@@ -159,7 +159,7 @@ app.initializers.add('yippy-auth-ldap', () => {
         }
       }
       
-      if (app.forum.attribute('displayNameDriver') === 'nickname' && this.isProvided('nickname')) {
+      if (app.forum.attribute('displayNameDriver') === 'nickname') {
         const nicknameLabel = extractText(app.translator.trans('flarum-nicknames.forum.sign_up.nickname_placeholder'));
 
         items.add(
