@@ -44,6 +44,9 @@ This extension support English.
 
 - `Disable Flarum login and only use LDAP authentication`: merely hides the standard login links and buttons. Users can still use the standard login method through the API.
 - `Display detailed LDAP errors for failed login attempts`: enable this option to help troubleshoot LDAP account errors for failed login, this will display a error whether the account isn't found, disabled or password expired.
+
+- `Assign specific Permissions`: Automatically add User Permission Groups to newly created Users from this LDAP Server: ![image](https://github.com/Yippy/flarum-ext-auth-ldap/raw/master/assets/images/ldap_new_user_confirmation_popup.png)
+
 - `Enable LDAP Server`: Toggle LDAP Domain server, when disabled (Unticked) this setting will be skipped.
 
 ## Development (With docker)
