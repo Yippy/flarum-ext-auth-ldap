@@ -1,17 +1,14 @@
-import { extend } from 'flarum/extend';
-import app from 'flarum/app';
-
-import Modal from 'flarum/components/Modal';
-import Button from 'flarum/components/Button';
-import LogInButtons from 'flarum/components/LogInButtons';
-import extractText from 'flarum/utils/extractText';
-import ItemList from 'flarum/utils/ItemList';
-import Stream from 'flarum/utils/Stream';
+import FormModal from 'flarum/common/components/FormModal';
+import Button from 'flarum/common/components/Button';
+import LogInButtons from 'flarum/forum/components/LogInButtons';
+import extractText from 'flarum/common/utils/extractText';
+import ItemList from 'flarum/common/utils/ItemList';
+import Stream from 'flarum/common/utils/Stream';
 
 const translationPrefix = 'yippy-auth-ldap.forum.';
 const translationErrorsPrefix = 'yippy-auth-ldap.forum.errors.';
 
-export default class LDAPLogInModal extends Modal {
+export default class LDAPLogInModal extends FormModal {
   oninit(vnode) {
     super.oninit(vnode);
 
@@ -261,6 +258,11 @@ export default class LDAPLogInModal extends Modal {
           domain_index: error.response.errors[0].domain_index});
           break;
         case 'domains.mail_field_does_not_exist':
+          error.alert.content = app.translator.trans(translationErrorsPrefix + code_error, {server: app.forum.attribute('yippy-auth-ldap.method_name'),
+          data: error.response.errors[0].data,
+          domain_index: error.response.errors[0].domain_index});
+          break;
+        case 'domains.connection_failed':
           error.alert.content = app.translator.trans(translationErrorsPrefix + code_error, {server: app.forum.attribute('yippy-auth-ldap.method_name'),
           data: error.response.errors[0].data,
           domain_index: error.response.errors[0].domain_index});

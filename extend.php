@@ -1,8 +1,6 @@
 <?php namespace Yippy\Flarum\Auth\LDAP;
 
 use Flarum\Extend;
-use Flarum\Foundation\Application;
-use Illuminate\Events\Dispatcher;
 use Flarum\Frontend\Document;
 
 return [
@@ -22,7 +20,8 @@ return [
     ->css(__DIR__.'/less/forum.less'),
   (new Extend\Routes('forum'))
     ->post('/auth/ldap', 'auth.ldap.post', Controllers\LDAPAuthController::class)
-    ->get('/auth/ldap', 'auth.ldap.get', Controllers\LDAPAuthController::class),
+    ->get('/auth/ldap', 'auth.ldap.get', Controllers\LDAPAuthController::class)
+    ->post('/register/ldap', 'register.ldap.post', Controllers\LDAPRegisterController::class),
   (new Extend\Settings)
     ->serializeToForum('yippy-auth-ldap.onlyUse', 'yippy-auth-ldap.onlyUse', 'boolVal', false)
     ->serializeToForum('yippy-auth-ldap.display_detailed_error', 'yippy-auth-ldap.display_detailed_error', 'boolVal', false)

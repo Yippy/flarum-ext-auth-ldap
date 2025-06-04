@@ -9,6 +9,7 @@ yippy-auth-ldap:
       not_authenticated: Unable to bind {server} due to invalid credential, amend extension settings.
       csrf_token_mismatch: You have been inactive for too long, please refresh the page and try again
       domains:
+        connection_failed: Connection failed for Domain {domain_index}, error code `{data}`
         no_domains: Admin settings has no domains set, amend extension settings.
         empty_host: Domain {domain_index} has no Domains or server IP addresses set, amend extension settings.
         empty_base_dn: Domain {domain_index} has no Base DNs set, amend extension settings.
@@ -47,7 +48,7 @@ yippy-auth-ldap:
           host: Domains or server IP addresses
           host_help: Comma separated
           base_dn: Base DNs
-          base_dn_help: Semicolon separated
+          base_dn_help: Semicolon separated, for multiple Base DNs.
           filter: Filter to apply
           filter_help: Optional, must exclude 'Search fields' into the filter. For example inputting filter as '(objectclass=user)' and selecting 'uid' within 'Search fields' will amend the filter as '(&(objectclass=user)(uid=[User's Input]))"
           port: Port
@@ -68,6 +69,8 @@ yippy-auth-ldap:
           user_mail_help: Leave empty for allowing User's to set their own email during registation
           user_nickname_fields: Assign Nickname with fields
           user_nickname_fields_help: Nickname extension must be enabled, compile the Nickname with multiple LDAP fields using the dropdown options. For example selecting "givenname,sn" will assign "[First Name] [Last Name]" as their Nickname
+          permission_groups: Assign specific Permissions
+          permission_groups_help: This is applied upon registration
           is_enabled: Enable LDAP Server
       onlyUse: Hide Flarum standard login method
       display_detailed_error: Display detailed LDAP errors for failed login attempts 

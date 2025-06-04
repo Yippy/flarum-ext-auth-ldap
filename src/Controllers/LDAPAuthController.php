@@ -1,4 +1,5 @@
-<?php namespace Yippy\Flarum\Auth\LDAP\Controllers;
+<?php
+namespace Yippy\Flarum\Auth\LDAP\Controllers;
 
 use Exception;
 use Illuminate\Support\Arr;
@@ -93,9 +94,14 @@ class LDAPAuthController implements RequestHandlerInterface
 						return $this->errorResponse("domains.empty_search_field", ["domain_index" => $index+1]);
 					}
 					$userLdapMail = $domain['user']['mail'];
+					$userPermissionGroups = $domain['permission']['groups'];
 
 					$connection = new Connection($config);
-
+					try {
+						$connection->connect();
+					} catch (\LdapRecord\Auth\BindException $e) {
+						return $this->errorResponse("domains.connection_failed", ["data" => $error->getErrorCode(), "domain_index" => $index+1]);
+					}
 					foreach (explode(';', $searchBaseDNs) as $searchBaseDN) {
 						foreach ($searchUserFields as $searchUserField) {
 							try {
@@ -123,7 +129,7 @@ class LDAPAuthController implements RequestHandlerInterface
 									return $this->response->make(
 										'ldap',
 										$user[strtolower($userLdapUsername)][0],
-										function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields) {
+										function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields, $userPermissionGroups, $index) {
 											$foundNickname = [];
 											foreach ($searchNicknameFields as $searchNicknameField) {
 												if (array_key_exists(strtolower($searchNicknameField), $user)) {
@@ -134,7 +140,15 @@ class LDAPAuthController implements RequestHandlerInterface
 												->suggest('isLDAP', true)
 												->provide('username', $user[strtolower($userLdapUsername)][0])
 												//->provideAvatar($user->getJpegPhoto())
-												->setPayload((array)$user['dn']);
+												->setPayload(
+													[
+														"index" => $index,
+														"dn" =>$user['dn'],
+														"permission" => [
+															"groups" => $userPermissionGroups
+														]
+													]
+												);
 											if (count($foundNickname) > 0) {
 												$registration
 													->provide('nickname', implode(" ", $foundNickname));
