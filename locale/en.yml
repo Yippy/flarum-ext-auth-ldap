@@ -68,6 +68,8 @@ yippy-auth-ldap:
           user_mail_help: Leave empty for allowing User's to set their own email during registation
           user_nickname_fields: Assign Nickname with fields
           user_nickname_fields_help: Nickname extension must be enabled, compile the Nickname with multiple LDAP fields using the dropdown options. For example selecting "givenname,sn" will assign "[First Name] [Last Name]" as their Nickname
+          permission_groups: Assign specific Permissions
+          permission_groups_help: This is applied upon registration
           is_enabled: Enable LDAP Server
       onlyUse: Hide Flarum standard login method
       display_detailed_error: Display detailed LDAP errors for failed login attempts 

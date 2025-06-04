@@ -93,6 +93,7 @@ class LDAPAuthController implements RequestHandlerInterface
 						return $this->errorResponse("domains.empty_search_field", ["domain_index" => $index+1]);
 					}
 					$userLdapMail = $domain['user']['mail'];
+					$userPermissionGroups = $domain['permission']['groups'];
 
 					$connection = new Connection($config);
 
@@ -123,7 +124,7 @@ class LDAPAuthController implements RequestHandlerInterface
 									return $this->response->make(
 										'ldap',
 										$user[strtolower($userLdapUsername)][0],
-										function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields) {
+										function (Registration $registration) use ($user, $userLdapUsername, $userLdapMail, $searchNicknameFields, $userPermissionGroups, $index) {
 											$foundNickname = [];
 											foreach ($searchNicknameFields as $searchNicknameField) {
 												if (array_key_exists(strtolower($searchNicknameField), $user)) {
@@ -132,9 +133,18 @@ class LDAPAuthController implements RequestHandlerInterface
 											}
 											$registration
 												->suggest('isLDAP', true)
+												->suggest('permissionGroupForLDAP', $userPermissionGroups)
 												->provide('username', $user[strtolower($userLdapUsername)][0])
 												//->provideAvatar($user->getJpegPhoto())
-												->setPayload((array)$user['dn']);
+												->setPayload(
+													[
+														"index" => $index,
+														"dn" =>$user['dn'],
+														"permission" => [
+															"groups" => $userPermissionGroups
+														]
+													]
+												);
 											if (count($foundNickname) > 0) {
 												$registration
 													->provide('nickname', implode(" ", $foundNickname));
