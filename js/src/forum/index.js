@@ -76,7 +76,6 @@ app.initializers.add('yippy-auth-ldap', () => {
 
   extend("flarum/forum/components/SignUpModal", 'onready', function () {
     if (this.attrs.assignLDAPPermissionGroupList.length > 0) {
-      let availablePermissionGroupList = {results: this.attrs.assignLDAPPermissionGroupList};
       this.$('[name=LDAPSelectDropdown]').select2({
         dropdownCssClass: ":all:",
         disabled: true,

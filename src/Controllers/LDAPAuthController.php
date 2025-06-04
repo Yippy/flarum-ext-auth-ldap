@@ -146,7 +146,6 @@ class LDAPAuthController implements RequestHandlerInterface
 														"index" => $index,
 														"dn" =>$user['dn'],
 														"permission" => [
-															"isAssigned" => false,
 															"groups" => $userPermissionGroups
 														]
 													]

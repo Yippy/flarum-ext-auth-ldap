@@ -2,6 +2,9 @@
 
 use Flarum\Extend;
 use Flarum\Frontend\Document;
+use Flarum\User\Event\RegisteringFromProvider;
+use Flarum\User\RegistrationToken;
+use Flarum\User\User;
 
 return [
   (new Extend\Frontend('admin'))
@@ -34,4 +37,16 @@ return [
     ->serializeToForum('yippy-auth-ldap.onlyUse', 'yippy-auth-ldap.onlyUse', 'boolVal', false)
     ->serializeToForum('yippy-auth-ldap.display_detailed_error', 'yippy-auth-ldap.display_detailed_error', 'boolVal', false)
     ->serializeToForum('yippy-auth-ldap.method_name', 'yippy-auth-ldap.method_name', 'strVal', 'LDAP'),
+  (new Extend\Event)
+    ->listen(RegisteringFromProvider::class, function (RegisteringFromProvider $event) {
+      if ($event->provider == 'ldap' && $event->payload) {
+        if (is_array($event->payload) && array_key_exists('permission', $event->payload)) {
+          $assignPermission = array_map('intval', $event->payload['permission']['groups']);
+          // Because the User ID doesn't exist yet, the group attached must be done after saving User into Database
+          $event->user->afterSave(function (User $user) use ($assignPermission) {
+              $user->groups()->attach($assignPermission);
+          });
+        }
+      }
+    })
 ];
