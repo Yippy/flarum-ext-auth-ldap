@@ -138,6 +138,7 @@ class LDAPAuthController implements RequestHandlerInterface
 											}
 											$registration
 												->suggest('isLDAP', true)
+												->suggest('permissionGroupForLDAP', $userPermissionGroups)
 												->provide('username', $user[strtolower($userLdapUsername)][0])
 												//->provideAvatar($user->getJpegPhoto())
 												->setPayload(
@@ -145,6 +146,7 @@ class LDAPAuthController implements RequestHandlerInterface
 														"index" => $index,
 														"dn" =>$user['dn'],
 														"permission" => [
+															"isAssigned" => false,
 															"groups" => $userPermissionGroups
 														]
 													]

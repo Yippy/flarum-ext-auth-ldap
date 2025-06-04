@@ -2,6 +2,7 @@ import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Button from 'flarum/common/components/Button';
 import Group from 'flarum/common/models/Group';
+import textContrastClass from 'flarum/common/helpers/textContrastClass';
 
 interface LdapDomain {
   host: string
@@ -131,6 +132,7 @@ app.initializers.add(settingsPrefix, () => {
           let modelPermissionGroup: PermissionGroup[] = {
             id: permissionGroup.data.id,
             text: permissionGroup.data.attributes.namePlural,
+            color: permissionGroup.data.attributes.color,
             icon: permissionGroup.data.attributes.icon,
             isHidden: permissionGroup.data.attributes.isHidden,
             namePlural: permissionGroup.data.attributes.namePlural,
@@ -426,7 +428,7 @@ app.initializers.add(settingsPrefix, () => {
                                 return output;
                               },
                               templateSelection: (value) => {
-                                var output = '<span>'
+                                var output = '<span style="padding: 5px 10px 5px 10px; background-color:'+value.color+';" class="'+textContrastClass(value.color)+'">'
                                 if(value.icon){
                                   output += '<i class="fa fa-lg '+value.icon.toLowerCase()+'"></i> ';
                                 }

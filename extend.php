@@ -12,6 +12,14 @@ return [
         <link href="/assets/extensions/yippy-auth-ldap/select2.min.css" rel="stylesheet">
       ';
     }),
+  (new Extend\Frontend('forum'))
+    ->content(function (Document $document) {
+      $document->head[] = '
+        <script src="/assets/extensions/yippy-auth-ldap/jquery.min.js"></script>
+        <script src="/assets/extensions/yippy-auth-ldap/select2.min.js"></script>
+        <link href="/assets/extensions/yippy-auth-ldap/select2.min.css" rel="stylesheet">
+      ';
+    }),
   (new Extend\Locales(__DIR__ . '/locale')),
   (new Extend\Frontend('admin'))
     ->js(__DIR__.'/js/dist/admin.js'),
