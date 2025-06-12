@@ -11,6 +11,7 @@ import LDAPLogInModal from "./components/LDAPLogInModal";
 import extractText from 'flarum/utils/extractText';
 import Group from 'flarum/common/models/Group';
 import textContrastClass from 'flarum/common/helpers/textContrastClass';
+import Stream from 'flarum/utils/Stream';
 
 const translationPrefix = 'yippy-auth-ldap.forum.';
 
@@ -91,6 +92,25 @@ app.initializers.add('yippy-auth-ldap', () => {
         </div>,
         26
         );
+        if (this.isProvided('nickname')) {
+          this.nickname = Stream(this.attrs.nickname || '');
+
+          items.add(
+            'nickname',
+            <div className="Form-group">
+              <input
+                className="FormControl"
+                name="nickname"
+                type="text"
+                placeholder={extractText(app.translator.trans('flarum-nicknames.forum.sign_up.nickname_placeholder'))}
+                bidi={this.nickname}
+                disabled={this.loading || this.isProvided('nickname')}
+                required={app.forum.attribute('randomizeUsernameOnRegistration')}
+              />
+            </div>,
+            25
+          );
+        }
       }
 
       if (items.has('email')) {
